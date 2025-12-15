@@ -182,6 +182,14 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+	
+	// 1. Create a FileServer for the 'public' directory where the frontend files are located.
+	staticFileServer := http.FileServer(http.Dir("public"))
+
+	// 2. Handle all requests to the root path ("/") by serving static files.
+	// The path prefix is stripped to allow files like "index.html" to be found inside the "public" directory.
+	r.PathPrefix("/").Handler(http.StripPrefix("/", staticFileServer))
+
 	r.Path("/lrange/{key}").Methods("GET").HandlerFunc(ListRangeHandler)
 	r.Path("/rpush/{key}/{value}").Methods("GET").HandlerFunc(ListPushHandler)
 	r.Path("/info").Methods("GET").HandlerFunc(InfoHandler)
