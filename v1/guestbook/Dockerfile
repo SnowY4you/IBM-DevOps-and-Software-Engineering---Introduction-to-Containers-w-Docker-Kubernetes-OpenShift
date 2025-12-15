@@ -9,9 +9,15 @@ WORKDIR /app
 # Copy the application source code (main.go) and any other source files
 COPY . . 
 
+# Go Modules to allow 'go get'
+RUN go mod init guestbook
+
 # The 'go get' commands are necessary to download and install the dependencies
 RUN go get github.com/codegangsta/negroni
 RUN go get github.com/gorilla/mux github.com/xyproto/simpleredis
+
+# The 'go mod tidy' step ensures dependencies are recorded correctly
+RUN go mod tidy
 
 # Build the executable (binary) from the main.go file
 RUN CGO_ENABLED=0 go build -o guestbook main.go
@@ -20,7 +26,7 @@ RUN CGO_ENABLED=0 go build -o guestbook main.go
 FROM alpine:latest
 
 # Install necessary runtime dependencies (e.g., ca-certificates for HTTPS)
-RUN apk --no-cache add ca-certificates
+# RUN apk --no-cache add ca-certificates
 
 # Add site parts
 ADD public/index.html /app/public/index.html
