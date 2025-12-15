@@ -1,4 +1,5 @@
-# IBM DevOps and Software Engineering - Introduction to Containers w/ Docker, Kubernetes & OpenShift - Lab: Build and Deploy a Simple Guestbook App
+# IBM DevOps and Software Engineering - Introduction to Containers w/ Docker, Kubernetes & OpenShift
+# Lab: Build and Deploy a Simple Guestbook App
 # https://github.com/SnowY4you
 # Stage 1: Builder Stage
 FROM golang:1.18 AS builder
@@ -28,17 +29,16 @@ FROM alpine:latest
 # Install necessary runtime dependencies (e.g., ca-certificates for HTTPS)
 # RUN apk --no-cache add ca-certificates
 
-# Add site parts
-ADD public/index.html /app/public/index.html
-ADD public/script.js /app/public/script.js
-ADD public/style.css /app/public/style.css
-ADD public/jquery.min.js /app/public/jquery.min.js
-
 # Set the working directory for the final image
 WORKDIR /app
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/guestbook /app/guestbook
+
+ADD public/index.html /app/public/index.html
+ADD public/script.js /app/public/script.js
+ADD public/style.css /app/public/style.css
+ADD public/jquery.min.js /app/public/jquery.min.js
 
 # Set the application entry point
 CMD ["./guestbook"]
